@@ -1,0 +1,1 @@
+{"sections":{"product-template":{"type":"product-template","settings":{"is_visivle":false,"text":"default text. default text."}},"product-recommendations":{"type":"product-recommendations","settings":{"show_product_recommendations":true,"product_recommendations_heading":"You may also like","related_count":3}}},"order":["product-template","product-recommendations"]}

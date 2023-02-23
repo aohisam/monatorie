@@ -1,0 +1,85 @@
+{%- if product.metafields.inventory.ShappifyHidden == 'true' -%}{%- continue -%}{%- endif -%}
+{%- liquid
+  assign on_sale = false
+  if product.compare_at_price > product.price
+    assign on_sale = true
+  endif
+
+  assign sold_out = true
+  if product.available
+    assign sold_out = false
+  endif
+
+  assign product_tags = product.tags | join: ','
+  assign has_custom_label = false
+  if product_tags contains '_label_'
+    for tag in product.tags
+      if tag contains '_label_'
+        assign tag_starts_with = tag | slice: 0
+        if tag_starts_with == '_'
+          assign has_custom_label = true
+          assign custom_label = tag | replace: '_label_', ''
+        endif
+      endif
+    endfor
+  endif
+-%}
+
+<a href="{{ product.url | within: collection }}">
+  <div class="product">
+    <img width="100%" src="{{product.featured_media | img_url: '386x'}}" alt="{{product.featured_media.alt}}">
+    <div class="product_info">
+      {% render 'judgeme_widgets', widget_type: 'judgeme_preview_badge', jm_style: 'pointer-events: none;', concierge_install: false, product: product %}
+      <!--地金,石-->
+      {% if product.metafields.custom_fields["metal"] != blank %}
+        <p class="product_info_metal_stone">{{ product.metafields.custom_fields["metal"] }}</p>
+      {% endif %}
+      {% if product.metafields.custom_fields["cf_"] != blank %}
+      <p class="product_info_metal_stone">{{ product.metafields.custom_fields["cf_"] }}</p>
+      {% endif %}
+      <!--商品名-->
+      <p>{{ product.title }}</p>
+      <!--価格-->
+      <div class="grid-product__price">
+        {%- if on_sale -%}
+          <span class="visually-hidden">{{ 'products.general.regular_price' | t }}</span>
+          <span class="grid-product__price--original">{{ product.compare_at_price | money }}</span>
+          <span class="visually-hidden">{{ 'products.general.sale_price' | t }}</span>
+        {%- endif -%}
+        {%- if product.price_varies -%}
+          {{ product.price_min | money }}<span class="tax-notice">{{ 'general.product.tax' |t }}</span>～
+        {%- else -%}
+          {{ product.price  | money }}<span class="tax-notice">{{ 'general.product.tax' |t }}</span>
+        {%- endif -%}
+        {%- if on_sale -%}
+          {%- if settings.product_save_amount -%}
+            {%- if settings.product_save_type == 'dollar' -%}
+              {%- capture saved_amount -%}{{ product.compare_at_price | minus: product.price | money }}{%- endcapture -%}
+            {%- else -%}
+              {%- capture saved_amount -%}{{ product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round }}%{%- endcapture -%}
+            {%- endif -%}
+            <span class="grid-product__price--savings">
+              {{ 'products.general.save_html' | t: saved_amount: saved_amount }}
+            </span>
+          {%- endif -%}
+        {%- endif -%}
+
+        {%- assign product_variant = product.selected_or_first_available_variant -%}
+        {%- if product_variant.unit_price_measurement -%}
+          <div class="product__unit-price">
+            {%- capture unit_price_base_unit -%}
+              {%- if product_variant.unit_price_measurement -%}
+                {%- if product_variant.unit_price_measurement.reference_value != 1 -%}
+                  {{ product_variant.unit_price_measurement.reference_value }}
+                {%- endif -%}
+                {{ product_variant.unit_price_measurement.reference_unit }}
+              {%- endif -%}
+            {%- endcapture -%}
+
+            {{ product_variant.unit_price | money }}/{{ unit_price_base_unit }}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</a>

@@ -1,0 +1,8 @@
+{% if product.metafields["custom_fields"]["cf_"] != blank %}
+  <div class="custom-field custom-field__cf- custom-field__type--text">
+    <h3 class="custom-field--title"><ls-static-757956>タイトル上テキスト</ls-static-757956></h3>
+    <div class="custom-field--value">
+      {{ product.metafields["custom_fields"]["cf_"] }}
+    </div>
+  </div>
+{% endif %}

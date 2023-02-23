@@ -1,0 +1,65 @@
+<!-- title -->
+<div class="content">
+  <div class="title">
+    <h3><ls-static-403713>{{ 'general.site.category' | t }}</ls-static-403713></h3>
+    <p><ls-static-324674>CATEGORY</ls-static-324674></p>
+  </div>
+</div>
+
+<!-- category -->
+<div class="content">
+  <div class="top_category">
+    {% for block in section.blocks %}
+      {% if block.settings.category_text_jp != blank %}
+        {%if block.settings.category_link %}<a href="{{ block.settings.category_link }}">{% endif %}
+          <div>
+            <span>{{ block.settings.category_text_jp }}</span><br><span>{{ block.settings.category_text_en }}</span>
+          </div>
+          <div>{{ 'arrow_btn.png' | asset_url | img_tag }}</div>
+        {%if block.settings.category_link %}</a>{% endif %}
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": {
+    "ja": "カテゴリー"
+    },
+  "class": "category",
+  "blocks": [
+      {
+        "name": "category",
+        "type" : "header",
+        "settings": [
+          {
+            "type" : "text",
+            "id" : "category_text_jp",
+            "label" : "テキスト(日本語)"
+          },
+          {
+            "type" : "text",
+            "id" : "category_text_en",
+            "label" : "テキスト(英語)"
+          },
+          {
+            "type" : "url",
+            "id" : "category_link",
+            "label" : "リンクURL"
+          }
+        ]
+      }
+  ],
+  "presets": [
+    {
+      "name": {
+        "ja": "カテゴリー"
+        },
+      "category": {
+        "ja": "新規メニュー"
+        }
+    }
+  ]
+}
+{% endschema %}

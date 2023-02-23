@@ -1,0 +1,63 @@
+<!-- news -->
+<div class="content">
+  <div class="news">
+
+    {% for block in section.blocks %}
+      {% if block.settings.news_text != blank %}
+        {% if block.settings.news_link != blank %}<a href="{{ block.settings.news_link}}">{% endif %}
+          <div class="news_row">
+            <div class="tt_drugs_r">
+                <p>{{ block.settings.news_date}}</p>
+            </div>
+            <div>
+              <p>{{ block.settings.news_text}}</p>
+            </div>
+          </div>
+        {% if block.settings.news_link != blank %}</a>{% endif %}
+      {% endif %}
+    {% endfor %}
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": {
+    "ja": "お知らせ"
+    },
+  "class": "news",
+  "blocks": [
+      {
+        "name": "news",
+        "type" : "header",
+        "settings": [
+          {
+            "type" : "text",
+            "id" : "news_date",
+            "label" : "NEWS日付"
+          },
+          {
+            "type" : "text",
+            "id" : "news_text",
+            "label" : "NEWSテキスト"
+          },
+          {
+            "type" : "url",
+            "id" : "news_link",
+            "label" : "リンクURL"
+          }
+        ]
+      }
+  ],
+  "presets": [
+    {
+      "name": {
+        "ja": "お知らせ"
+        },
+      "category": {
+        "ja": "新規メニュー"
+        }
+    }
+  ]
+}
+{% endschema %}

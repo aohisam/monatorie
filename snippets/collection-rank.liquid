@@ -1,0 +1,131 @@
+{%- capture product_price -%}
+  {%- if show_price -%}
+    <p class="boost-pfs-filter-product-item-price">
+      {%- if on_sale -%}
+        <span class="boost-pfs-filter-product-item-sale-price">{{- product.price | money -}}</span>
+        <s>{{- product.compare_at_price | money -}}</s>
+      {%- else -%}
+        {%- if product.price_varies -%}
+          <span class="boost-pfs-filter-product-item-price-from-text">{{- label_from | default: 'From' -}}</span>
+        {%- endif -%}
+        <span class="boost-pfs-filter-product-item-regular-price">{{- product.price | money -}}</span>
+        <span class="tax-notice">{{ 'general.product.tax' |t }}</span>
+      {%- endif -%}
+    </p>
+  {%- endif -%}
+{%- endcapture -%}
+<style>
+  .ranking-top {
+    margin-top: 120px;
+  }
+  .ranking-title p {
+    margin-bottom: 10px;
+  }
+  .ranking-block {
+    margin-bottom: 100px;
+  }
+  .ranking-block .slick-prev,
+  .ranking-block .slick-next {
+    display: inline-block !important;
+    top: 18%;
+  }
+  .ranking-block .slick-prev {
+    left: -45px;
+  }
+  .ranking-block .slick-next {}
+  .ranking-slide-block {
+    padding: 0 10px;
+  }
+  .rank-badge {
+    color: #ffffff;
+    background-color: #bbbbbb;
+    border-radius: 0.5em;
+    padding: 20px;
+  }
+  @media screen and (max-width:768px) {
+    .ranking-block .slick-next {
+      right: -5px;
+    }
+  }
+</style>
+{% if  collection.handle == 'necklace' or collection.handle == 'ring' or collection.handle == 'earring' %}
+  <!-- ranking  -->
+  <div class="content ranking-top">
+    <div class="title ranking-title">
+      <h3>{{ collection.title }}
+        <ls-static-211829>- {{ 'general.site.ranking' | t }}TOP5</ls-static-211829>
+      </h3>
+      <p>
+        <ls-static-412336>RANKING TOP 5</ls-static-412336>
+      </p>
+    </div>
+    <div class="ranking-block">
+      <div class="slick_ranking">
+        {% if collection.handle == 'necklace' %}
+          {% assign ranks = collections["rank-necklace"].products %}
+        {%  elsif collection.handle == 'ring' %}
+          {% assign ranks = collections["rank-ring"].products %}
+        {%  elsif collection.handle == 'earring' %}
+          {% assign ranks = collections["rank-earring"].products %}
+        {% endif %}
+        {% for product in ranks limit:5 %}
+          {% assign rank = rank | plus: 1 %}
+          <div class="boost-pfs-filter-product-item-inner ranking-slide-block">
+            <a href="{{ product.url }}">
+              <span class="rank-badge"><ls-static-353210>No.</ls-static-353210>{{ rank }}</span>
+              <div class="boost-pfs-filter-product-item-image">
+
+                <img src="{{product.images[0].src |  img_url : 'master'  }}">
+
+                {% comment %}20221028 tsuda ↓{% endcomment %}
+                {%  assign variant_num = 0 %}
+                {%  assign stock_false = 0 %}
+                {%- for variant in product.variants -%}
+                  {%- comment -%}在庫チェック{%- endcomment -%}
+                  {% assign variant_num = variant_num | plus: 1 %}
+                  {%- if 1 > variant.inventory_quantity -%}
+                    {% assign stock_false = stock_false | plus: 1 %}
+                  {%- endif -%}
+                {%- endfor -%}
+                {%- if variant_num == stock_false  -%}
+                  <div class="boost-pfs-filter-product-item-label">
+                    <span class="soldout boost-pfs-filter-label boost-pfs-filter-label-display-text">
+                      <ls-static-266497>Sold Out</ls-static-266497>
+                    </span>
+                  </div>
+                {%- endif -%}
+                {% comment %}20221028 tsuda ↑{% endcomment %}
+
+                <div class="boost-pfs-filter-product-item-label">{{itemLabels}}{{itemTagLabels}}</div>
+              </div>
+            </a>
+
+            <div class="boost-pfs-filter-product-bottom">
+              <div class="boost-pfs-filter-product-bottom-inner">
+                <a class-"product_title" href="{{product.url}}#">
+                  {{ product.metafields.judgeme.badge }}
+                  <!--地金,石-->
+                  <p class="product_info_metal_stone">
+                    {{product.metafields.custom_fields.metal}}
+                  </p>
+                  <p class="product_info_metal_stone">
+                    {{product.metafields.custom_fields.cf_}}
+                  </p>
+                  <!--商品名-->
+                  {{product.title}}
+                  <p class="boost-pfs-filter-product-item-price">
+                    <span class="boost-pfs-filter-product-item-price-from-text">{{- label_from | default: 'From' -}}</span>
+                    <span class="boost-pfs-filter-product-item-regular-price">{{- product.price | money -}}</span>
+                    <span class="tax-notice">
+                      <ls-static-631048>{{ 'general.product.tax' |t }}</ls-static-631048>
+                    </span>
+                  </p>
+                </a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+{% endif %}

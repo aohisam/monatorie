@@ -1,0 +1,69 @@
+<!-- mv -->
+<div class="pc">
+  <div class="wide-content mv_position">
+    <div class="mv">
+      <ul class="slick-slider slick_mv cssreset">
+        {% for block in section.blocks %}
+          {% if block.settings.mv_image_pc != blank %}
+          <li>
+            {{ block.settings.mv_image_pc | img_url: 'master' | img_tag }}
+          </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="sp">
+  <div class="wide-content mv_position">
+    <div class="mv">
+      <ul class="slick-slider slick_mv cssreset">
+        {% for block in section.blocks %}
+          {% if block.settings.mv_image_sp != blank %}
+          <li>
+            {{ block.settings.mv_image_sp | img_url: 'master' | img_tag }}
+          </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": {
+    "ja": "メインビジュアル"
+  },
+  "class": "mv_image",
+  "blocks": [
+      {
+        "name": "image",
+        "type" : "header",
+        "settings": [
+          {
+            "type" : "image_picker",
+            "id" : "mv_image_pc",
+            "label" : "メインビジュアル画像(PC)"
+          },
+          {
+            "type" : "image_picker",
+            "id" : "mv_image_sp",
+            "label" : "メインビジュアル画像(SP)"
+          }
+        ]
+      }
+  ],
+  "presets": [
+    {
+      "name": {
+        "ja": "メインビジュアル"
+      },
+      "category": {
+        "ja": "新規メニュー"
+      }
+    }
+  ]
+}
+{% endschema %}

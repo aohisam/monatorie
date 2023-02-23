@@ -1,0 +1,82 @@
+{% assign cs_num = 0 %}
+{% for collection in collections %}
+      {% for product in collection.products %}
+            {% for tag in product.tags %}
+              {% if tag contains 'coming soon' %}
+              {% assign cs_num = cs_num | plus : 1 %}
+              {% endif %}
+            {% endfor %}
+      {% endfor %}
+{% endfor %}
+{% if cs_num > 0 %}
+<!--coming soon-->
+  {{ 'add-style-coming_soon.css' | asset_url | stylesheet_tag }}
+
+<div class="coming_soon">
+  <div class="coming_soon_wrap">
+                <div class="content coming_soon-top">
+  <div class="title coming_soon-title">
+    <h3><ls-static-211829>{{ 'general.site.coming-soon' | t }}</ls-static-211829></h3>
+    <p><ls-static-412336>COMING SOON</ls-static-412336></p>
+  </div>
+    <div class="coming_soon-block">
+      <div class="slick_coming_soon">
+      {% for collection in collections %}
+      {% for product in collection.products %}
+            {% for tag in product.tags %}
+              {% if tag contains "coming soon" %}
+        <div class="boost-pfs-filter-product-item-inner coming_soon-slide-block">
+                <div class="boost-pfs-filter-product-item-image">
+                  <img src="{{product.images[0].src |  img_url : 'master'  }}">
+                    <!-- <div class="coming_soon-label"><span class="coming_soon-span"><ls-static-266497>Coming Soon</ls-static-266497></span></div> -->
+                </div>
+            
+                <!-- 以下　商品名・商品情報 (ブロックごとコメントアウト) -->
+                <div class="boost-pfs-filter-product-bottom">
+                  <div class="boost-pfs-filter-product-bottom-inner">
+                      <!-- <a class-"product_title" href="{{product.url}}#"> -->
+                      <!-- {{ product.metafields.judgeme.badge }}
+                    <p class="product_info_metal_stone">
+                      {{product.metafields.custom_fields.metal}}
+                    </p>
+                    <p class="product_info_metal_stone">
+                      {{product.metafields.custom_fields.cf_}}
+                    </p> -->
+                  {{product.metafields.custom_fields.comsoon}}
+                    <!-- {{product.title}} -->
+                  <!--
+                    <p class="boost-pfs-filter-product-item-price">
+                      <span class="boost-pfs-filter-product-item-price-from-text">{{- label_from | default: 'From' -}}</span>
+                     <span class="boost-pfs-filter-product-item-regular-price">{{- product.price | money -}}</span><span class="tax-notice"><ls-static-631048>（税込）</ls-static-631048></span>
+                    </p> -->
+                      <!-- </a> -->
+                  </div>
+                </div> 
+
+      
+        </div>
+      {% endif %}
+            {% endfor %}
+          {% endfor %}
+      {% endfor %}
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% schema %}
+  {
+    "name": "coming soon",
+    "settings": [],
+    "presets": [{
+      "name": "Coming soon"
+    }]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

@@ -1,0 +1,570 @@
+{%- capture LS_INPUT -%}<!doctype html>
+{% comment ls-rpl %}<html class="no-js" lang="{{ request.locale.iso_code }}" dir="{{ settings.text_direction }}">{% endcomment %}<html class="no-js" lang="{%- render "ls-language" -%}" dir="{%- render "ls-language-direction" -%}">{% comment /ls-rpl %}{% endcomment %}
+<head>
+{%- render "ls-head" -%}
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="{{ settings.color_button }}">
+  <meta name="google-site-verification" content="qOMsP354gg2Bzic4FZ8MJ7yKA-kb4SuYp0JgnYjhN-Y" />
+  <link rel="canonical" href="{{ canonical_url }}">
+  <link rel="canonical" href="{{ canonical_url }}">
+  <link rel="preconnect" href="https://cdn.shopify.com">
+  <link rel="preconnect" href="https://fonts.shopifycdn.com">
+  <link rel="dns-prefetch" href="https://productreviews.shopifycdn.com">
+  <link rel="dns-prefetch" href="https://ajax.googleapis.com">
+  <link rel="dns-prefetch" href="https://maps.googleapis.com">
+  <link rel="dns-prefetch" href="https://maps.gstatic.com">
+<!-- 高速化キーリクエストのプリロード -->
+<link rel="preload" href="/apps/favorite_button/css/SFA.css" as="style">
+<!--   <link rel="preload" as="style" href="/apps/favorite_button/css/SFA.css"> -->
+  {%- if settings.favicon != blank -%}
+    <link rel="shortcut icon" href="{% comment ls-rpl %}{{ settings.favicon | img_url: '32x32' }}{% endcomment %}{%- capture LS_IMG_URL -%}{%- render "ls-img-url", image: settings.favicon, img_url: '32x32' -%}{%- endcapture -%}{{ LS_IMG_URL }}{% comment /ls-rpl %}{% endcomment %}" type="image/png" />
+  {%- endif -%}
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.shopify.com/s/files/1/0268/1202/2962/files/app.png?v=1616288501">
+
+
+  {%- render 'seo-title' -%}
+
+  {% if template == "index" %}
+  <meta name="description" content="{{ 'general.site.index-description' | t }}">
+  {% else %}
+  {%- if page_description -%}
+  <meta name="description" content="{{ page_description | escape }}">
+  {%- endif -%}
+  {% endif %}
+
+  {%- render 'social-meta-tags' -%}
+
+  {%- render 'font-face' -%}
+  {{ 'theme.css' | asset_url | stylesheet_tag }}
+  {%- render 'css-variables' -%}
+
+ 
+<script type="text/javascript">
+  $(function(){
+    var ua = navigator.userAgent;
+    if((ua.indexOf('iPhone') > 0) || ua.indexOf('iPod') > 0 || (ua.indexOf('Android') > 0 && ua.indexOf('Mobile') > 0)){
+        $('head').prepend('<meta name="viewport" content="width=768px">');
+    } else {
+        $('head').prepend('<meta name="viewport" content="width=device-width,initial-scale=1">');
+    }
+});
+</script>
+
+  <script>
+    document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+
+    window.theme = window.theme || {};
+    theme.routes = {
+      home: "{{ routes.root_url }}",
+      cart: "{{ routes.cart_url }}",
+      cartAdd: "{{ routes.cart_add_url | append: '.js'}}",
+      cartChange: "{{ routes.cart_change_url }}"
+    };
+    theme.strings = {
+      soldOut: {{ 'products.product.sold_out' | t | json }},
+      unavailable: {{ 'products.product.unavailable' | t | json }},
+      stockLabel: {{ 'products.product.stock_label' | t: count: '[count]' | json }},
+      willNotShipUntil: {{ 'products.product.will_not_ship_until' | t: date: '[date]' | json }},
+      willBeInStockAfter: {{ 'products.product.will_be_in_stock_after' | t: date: '[date]' | json }},
+      waitingForStock: {{ 'products.product.waiting_for_stock' | t | json }},
+      savePrice: {{ 'products.general.save_html' | t: saved_amount: '[saved_amount]' | json }},
+      cartEmpty: {{ 'cart.general.empty' | t | json }},
+      cartTermsConfirmation: {{ 'cart.general.terms_confirm' | t | json }}
+    };
+    theme.settings = {
+      dynamicVariantsEnable: true,
+      dynamicVariantType: {{ settings.variant_type | json }},
+      cartType: {{ settings.cart_type | json }},
+      moneyFormat: {{ shop.money_format | json }},
+      saveType: {{ settings.product_save_type | json }},
+      recentlyViewedEnabled: false,
+      predictiveSearch: {{ settings.predictive_search_enabled }},
+      predictiveSearchType: {{ settings.search_type | json }},
+      inventoryThreshold: {{ settings.inventory_threshold }},
+      quickView: {{ settings.quick_shop_enable }},
+      themeName: 'Impulse',
+      themeVersion: "3.6.1"
+    };
+  </script>
+
+
+<!--   <script type="text/javascript"> var ndnapps_product_json = "{{ 'ndnapps-products-slider.json' | asset_url }}";</script> -->
+{{ content_for_header }}
+<!-- {{ 'ndnapps_products_slider.js' | asset_url | script_tag }} -->
+
+  {% if template == 'product' and product.metafields.inventory.ShappifyHidden or product.type contains '_HIDDEN_' %}<meta name='robots' content='noindex'>{% endif %}
+
+  {%comment%}
+  {%- render 'bold-options-hybrid' -%}
+  {%- render 'bold-common' -%}
+  {%endcomment%}
+  
+<script src="{{ 'vendor-scripts-v7.js' | asset_url | split: '?' | first }}" defer="defer"></script>
+
+  {%- if shop.enabled_currencies.size > 1 -%}
+    <link rel="preload" as="style" href="{{ 'currency-flags.css' | asset_url | split: '?' | first }}" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="stylesheet" href="{{ 'currency-flags.css' | asset_url | split: '?' | first }}">
+  {%- endif -%}
+
+  <script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
+
+<!--スクロールエフェクト-->
+  <script src="{{ 'jquery.inview.min.js' | asset_url }}" defer="defer"></script>
+<!--スクロールエフェクト-end-->
+
+
+
+  {{ 'add-style.scss.css' | asset_url | stylesheet_tag }}
+  {{ 'add-style-header.scss.css' | asset_url | stylesheet_tag }}
+  {{ 'add-style-blog.scss.css' | asset_url | stylesheet_tag }}
+  {{ 'add-style-review.css' | asset_url | stylesheet_tag }}
+
+<!--サービスページの場合-->
+  {% if template == 'index' %}
+  {{ 'add-style-top.scss.css' | asset_url | stylesheet_tag }}
+  {% endif %}
+
+<!--商品・プロダクトページの場合-->
+  {% if template == 'product' %}
+  {{ 'add-style-product.scss.css' | asset_url | stylesheet_tag }}
+  {% endif %}
+
+<!--アバウトページの場合-->
+  {% if template == 'page.about' %}
+  {{ 'add-style-about.scss.css' | asset_url | stylesheet_tag }}
+  {% endif %}
+
+<!--コレクションページの場合-->
+  {% if template == 'collection' %}
+  {{ 'add-style-collection.scss.css' | asset_url | stylesheet_tag }}
+  {% endif %}
+
+<!--サービスページの場合-->
+  {% if template == 'page.service' %}
+  {{ 'add-style-service.scss.css' | asset_url | stylesheet_tag }}
+  {% endif %}
+
+<!--トップページ以外の場合ヘッダーの高さ調整start-->
+  {% unless template == "index" %}
+<style>
+  .main-content{padding-top:120px;}
+</style>
+  {% endunless %}
+<!--トップページ以外の場合ヘッダーの高さ調整end-->
+
+  {%- if request.page_type contains 'customers/' -%}
+    <script src="{{ 'shopify_common.js' | shopify_asset_url }}" defer="defer"></script>
+  {%- endif -%}
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.1/TweenMax.min.js"></script>
+  <script src="{{ 'jquery.easing.1.3.js' | asset_url }}" defer="defer"></script> -->
+
+
+
+
+
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QFKQS3W7VG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QFKQS3W7VG');
+</script>
+
+
+<!-- {{ 'ndnapps-products-slider.css' | asset_url | stylesheet_tag }} -->
+<!-- <script type="text/javascript">jQuery(document).ready(function(){Shopify.Products.recordRecentlyViewed( );});</script> -->
+<!-- <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script> -->
+{{ 'custom-fields.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'custom-fields-widgets.js' | asset_url }}" defer="defer"></script>
+
+<!--20211203-->
+{{ 'custom.css?20220614' | asset_url | stylesheet_tag }}
+{{ 'custom_sp.css?20220614' | asset_url | stylesheet_tag }}
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css">
+
+
+<!--begin-boost-pfs-filter-css-->
+  
+<!--end-boost-pfs-filter-css-->
+
+
+  {% render 'judgeme_core' %}
+</head>
+
+<body class="template-{{ template | replace: '.', ' ' | truncatewords: 1, '' | handle }}{% if request.path == '/challenge' %} template-challange{% endif %}" data-center-text="{{settings.type_body_align_text}}" data-button_style="{{settings.button_style}}" data-type_header_capitalize="{{settings.type_header_capitalize}}" data-type_headers_align_text="{{settings.type_headers_align_text}}" data-type_product_capitalize="{{settings.type_product_capitalize}}" data-swatch_style="{{settings.swatch_style}}" {% if settings.disable_animations %}data-disable-animations="true"{% endif %}>
+
+
+  <div class="container">
+
+    {%- section 'header' -%}
+    <!-- header-top-margin -->
+    <div class="header-top-margin"></div>
+
+
+  <!--   20221031 tsuda start -->
+  {% if template.name == 'page' %}
+    <div class="content">
+    {% render 'breadcrumbs' %}
+    </div>
+    {% endif %}
+  <!--   20221031 tsuda end -->
+
+  
+    {{ content_for_layout }}
+  
+    {%- section 'category' -%}
+    {% comment %} {%- section 'content' -%} {% endcomment %}
+{% comment %}  
+    {% if template == 'index' %} 
+    	{%- section 'column' -%}    
+    {% endif %}
+{% endcomment %}
+    {%- section 'footer' -%}
+
+    {%- section 'newsletter-popup' -%}
+
+    {%- if settings.cart_type == 'drawer' -%}
+      {%- render 'ajax-cart-template' -%}
+    {%- endif -%}
+
+  </div><!-- .container -->
+
+<script type="text/javascript">
+jQuery('.btn_row').on('click','button[name="add"]',function() {
+    if ($("input[name='gift']").prop("checked") == true) {
+      $.ajax({
+        type: 'POST',
+        url: '/cart/add.js',
+        data: {
+            items: [
+                {
+                    quantity:1,
+                    id: 38009021956274
+                }
+            ]
+        },
+        dataType: 'json',
+        async: false,
+        success: function() {
+            console.log("add.js 読み込み成功")
+        },
+        error: function() {
+            console.log("add.js 読み込み失敗")
+        }
+    });
+    }
+});
+  </script>
+  
+<!--モーダルウィンドウ-->
+
+<script>
+  $(function(){
+    var winScrollTop;
+    $('.ec-modal-open').each(function(){
+        $(this).on('click',function(){
+    		$('body').addClass("is-modal-open");
+            //スクロール位置を取得
+            winScrollTop = $(window).scrollTop();
+            var target = $(this).data('target');
+            var ecModal = document.getElementById(target);
+            $(ecModal).fadeIn(200);
+            return false;
+        });
+    });
+    $('.ec-modal-close').on('click',function(){
+        $('.ec-modal').fadeOut( 200);
+    		$('body').removeClass("is-modal-open");
+        $('body,html').stop().animate({scrollTop:winScrollTop}, 100);
+        return false;
+    });
+});
+</script>
+
+<!--コレクション遷移-->
+
+<script>
+jQuery(function(){
+    $('.overlay-all').addClass('active');
+    jQuery(window).scroll(function (){
+        jQuery('.fadein').each(function(){
+            var elemPos = jQuery(this).offset().top;
+            var scroll = jQuery(window).scrollTop();
+            var windowHeight = jQuery(window).height();
+            if (scroll > elemPos - windowHeight + 200){
+                jQuery(this).addClass('scrollin');
+            }
+        });
+    });
+  $(function(){
+    setInterval(function(){
+    jQuery(window).scroll();
+    },1000);
+});
+  });
+
+//フェードエフェクト：lottie
+</script>
+<script>
+jQuery(function(){
+    jQuery(window).scroll(function (){
+        jQuery('.lottie-player-torigger').each(function(){
+            var elemPos = jQuery(this).offset().top;
+            var scroll = jQuery(window).scrollTop();
+          var windowHeight = jQuery(window).height();
+            if (scroll > elemPos - windowHeight + 50){
+              	$(this).next().addClass('display-active');
+                $(this).next().addClass('scrollin');
+            }
+        });
+    });
+  });
+jQuery(function(){
+    jQuery(window).scroll(function (){
+        jQuery('.series-slider-center').each(function(){
+            var elemPos = jQuery(this).offset().top;
+            var scroll = jQuery(window).scrollTop();
+          var windowHeight = jQuery(window).height();
+            if (scroll > elemPos - windowHeight + 50){
+                jQuery('.series-slider').addClass('scrollin');
+            }
+        });
+    });
+    jQuery(window).scroll();
+  });
+  </script>
+ <script>
+ //パララックスエフェクト-SP用
+var whSp = window.innerHeight,
+  regSp = 40;//調整値、正の数だとスクロール時に上に動き、負の数だと下に動く。絶対値が大きいほど動く量が小さくなる。
+
+window.addEventListener('load', update_window_size);
+window.addEventListener('resize', update_window_size);
+function update_window_size() {
+  whSp = window.innerHeight;
+}
+
+var paraItemsSp = document.querySelectorAll('.para-img');//対象
+paraItemsSp = Array.prototype.slice.call(paraItemsSp, 0);
+
+//トリガー部分
+if (paraItemsSp.length) {
+  parallax();
+  window.addEventListener('load', parallax);
+  window.addEventListener('resize', parallax);
+  window.addEventListener('scroll', parallax, { passive: true });
+}
+
+//本体
+function parallax() {
+  paraItemsSp.forEach(function (paraItem, i) {
+
+    //動きなどもっと自由に決めたい場合はこのあたりを好きに修正する。
+    paraItem.style.transform = '';
+    var nowpos = paraItem.getBoundingClientRect().top - whSp,
+      myreg = paraItem.getAttribute('data-reg') ? Number(paraItem.getAttribute('data-reg')) : regSp;
+    if (nowpos < 0) {
+      paraItem.style.transform = 'translate(0,' + (nowpos / myreg) + 'vw)';
+    }
+
+  });
+}
+</script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+<script>
+$(".slick_mv").not('.slick-initialized').slick({});
+  
+
+  // 20221031 tsuda start
+
+   // 商品画像スライダー 
+  var slider = "#slick_product_detail"; // スライダー
+  var thumbnailItem = "#thumbnail_slider .thumbnail-item"; // サムネイル画像アイテム
+  
+
+  $(thumbnailItem).each(function(){
+   var index = $(thumbnailItem).index(this);
+   $(this).attr("data-index",index);
+  });
+  
+
+  $(slider).on('init',function(slick){
+   var index = $(".slide-item.slick-slide.slick-current").attr("data-slick-index");
+   $(thumbnailItem+'[data-index="'+index+'"]').addClass("thumbnail-current");
+  });
+
+  
+  $(slider).slick({
+    autoplay: false,
+    arrows: true,
+    // fade: true,
+    infinite: true
+  });
+  
+  $(thumbnailItem).on('click',function(){
+    var index = $(this).attr("data-index");
+    $(slider).slick("slickGoTo",index,false);
+  });
+  
+  
+  $(slider).on('beforeChange',function(event,slick, currentSlide,nextSlide){
+    $(thumbnailItem).each(function(){
+      $(this).removeClass("thumbnail-current");
+    });
+    $(thumbnailItem+'[data-index="'+nextSlide+'"]').addClass("thumbnail-current");
+  });
+ // 20221031 tsuda end  
+
+$(".slick_ranking").not('.slick-initialized').slick({
+  infinite: false,
+  arrows:true,
+  slidesToShow: 5,
+  slidesToScroll: 5,
+  autoplay: true,
+  autoplaySpeed: 4000,
+  responsive: [
+    {
+      breakpoint: 768,
+      settings: {
+        slidesToShow: 3,
+        slidesToScroll:3,
+      }
+    },
+    {
+      breakpoint: 480,
+      settings: {
+        slidesToShow: 2,
+        slidesToScroll: 2
+      }
+    }
+  ]
+});
+$(".slick_coming_soon").not('.slick-initialized').slick({
+  infinite: false,
+  arrows:true,
+  slidesToShow: 5,
+  slidesToScroll: 5,
+  autoplay: true,
+  autoplaySpeed: 4000,
+  responsive: [
+    {
+      breakpoint: 768,
+      settings: {
+        slidesToShow: 3,
+        slidesToScroll:3,
+      }
+    },
+    {
+      breakpoint: 480,
+      settings: {
+        slidesToShow: 2,
+        slidesToScroll: 2
+      }
+    }
+  ]
+});
+  
+//スムーススクロール 
+  $(function(){
+    $('a[href^="#"]').click(function(){
+      if($(this).parent().attr("class") != 'jdgm-widget-actions-wrapper'){
+        //ウィンドウサイズを取得する
+        var w = $(window).width();
+        //ウィンドウサイズが768より大きい場合の処理
+        if( w > 768 ) {
+          var headsize = 160;   
+        //ウィンドウサイズが768以下の場合の処理
+        } else {
+          var headsize = 64;
+        }
+        var speed = 800;
+        var href= $(this).attr("href");
+        var target = $(href == "#" || href == "" ? 'html' : href);
+        var position = target.offset().top-headsize;
+        $("html, body").animate({scrollTop:position}, speed, "swing");
+        return false;
+      }
+    });
+  });
+
+  
+</script>
+
+
+
+<!--begin-boost-pfs-js-->
+  
+<!--end-boost-pfs-js-->
+
+
+
+ <!-- Stamped - Begin Script (Reviews and UGCアプリ用追加コード)-->
+<script async type="text/javascript" data-api-key="" id="stamped-script-widget" src="https://cdn-stamped-io.azureedge.net/files/widget.min.js"></script>
+<!-- Stamped - Begin Script (Reviews and UGCアプリ用追加コード)-->
+  <style>
+    
+    .shopify-section.category{
+        {% if template == 'index' %}
+            margin-top: 0; 
+        {% else %}
+           margin-top: 120px;
+        {% endif %}
+    }
+    
+    .stamped-review {
+    background: none;
+    padding: 0;
+    margin: 0;
+    }
+    div[data-widget-style*=standard] .stamped-review:first-child {
+    	margin: 0!important;
+        padding: 0 !important;
+    }
+    .stamped-starratings {
+        position: relative;
+        right: 0;
+        top: 0!important;
+    }    
+    #stamped-main-widget {
+        margin-top: -50px !important;
+        margin-bottom: -80px !important;
+    }
+    div.stamped-container[data-widget-style], div[data-widget-style] div.stamped-container {
+        max-width: 100%;
+        margin: 0;
+        border: none!important;
+    }
+    .stamped-review-header-title {
+        letter-spacing: 0;
+        font-weight: 400;
+    }
+    .stamped-review .author {
+        font-weight: 400;
+    }
+  </style>
+
+  <!--   20221031 tsuda start -->
+{% if template == 'product' %}
+  {{ 'lightbox.css' | asset_url | stylesheet_tag }}
+  {{ 'lightbox.js' | asset_url | script_tag }}
+  {{ 'page.js' | asset_url | script_tag }}
+  {% endif %}
+  <!--   20221031 tsuda end -->
+  
+  <script>console.log("{{ template }}");</script>
+
+
+</body>
+</html>
+{%- endcapture -%}{%- render "ls-output", input: LS_INPUT -%}

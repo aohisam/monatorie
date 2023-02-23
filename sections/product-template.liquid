@@ -1,0 +1,671 @@
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+
+  unless thumbnail_position
+    assign thumbnail_position = 'beside'
+  endunless
+
+  unless description_style
+    assign description_style = 'full'
+  endunless
+
+  assign product_zoom_size = '1800x1800'
+  assign product_image_size = '620x'
+
+  case image_container_width
+    when 'small'
+      assign product_image_width = 'medium-up--two-fifths'
+      assign product_description_width = 'medium-up--three-fifths'
+      assign product_image_size = '480x'
+    when 'medium'
+      assign product_image_width = 'medium-up--one-half'
+      assign product_description_width = 'medium-up--one-half'
+      assign product_image_size = '620x'
+    when 'large'
+      assign product_image_width = 'medium-up--three-fifths'
+      assign product_description_width = 'medium-up--two-fifths'
+      assign product_image_size = '740x'
+  endcase
+
+  assign product_img_structure = product.featured_media | img_url: '1x1' | replace: '_1x1.', '_{width}x.'
+-%}
+
+
+<div id="ProductSection-{{ section_id }}"
+  class="product-section"
+  data-section-id="{{ section_id }}"
+  data-section-type="product-template"
+  data-product-handle="{{ product.handle }}"
+  data-product-title="{{ product.title | escape }}"
+  data-product-url="{{ product.url | within: collection }}"
+  data-aspect-ratio="{{ 100 | divided_by: product.featured_media.aspect_ratio }}"
+  data-img-url="{{ product_img_structure }}"
+  {% if settings.product_zoom_enable %}
+    data-image-zoom="true"
+  {% endif %}
+  {% if settings.inventory_enable %}
+    data-inventory="true"
+  {% endif %}
+  {% if settings.inventory_transfers_enable %}
+    data-incoming-inventory="true"
+  {% endif %}
+  {% unless isModal %}
+    data-enable-history-state="true"
+  {% endunless %}>
+
+  {%- render 'product-template-variables', product: product, current_variant: current_variant -%}
+
+  <!-- product_row -->
+  <div class="content">
+
+<!--   20221031 tsuda start -->
+    {% render 'breadcrumbs' %}
+<!--   20221031 tsuda end -->  
+    
+    <div class="product_row">
+      <!-- image -->
+
+      <!-- product_row左側 image -->
+      <div>
+        <ul id="slick_product_detail" class="slide cssreset">
+          {% for image in product.images %}
+          <li class="slide-item">
+            <div data-image-id="{{ image.id }}"><img src="{{ image.src | img_url: '980x' }}"></div>
+          </li>
+          {% endfor %}
+        </ul>
+        <ul id="thumbnail_slider" class="slide-navigation cssreset">
+          {% for image in product.images %}
+          <li class="thumbnail-item">
+            <div data-image-id="{{ image.id }}"><img src="{{ image | img_url: '245x' }}"></div>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+  <script>
+
+  </script>
+
+      <!-- product_row右側 info -->
+      <div>
+      	<div>         
+          <!--地金,石-->         
+          {% if product.metafields.custom_fields["metal"] != blank %}
+              <span>{{ product.metafields.custom_fields["metal"] }}</span>
+          {% endif %}
+          {% if product.metafields.custom_fields["cf_"] != blank %}
+          	  <br class="sp">
+              <span>{{ product.metafields.custom_fields["cf_"] }}</span>
+          {% endif %}          
+        </div>
+
+        <!--商品名-->
+        <div class="product_name">
+          {{ product.title | escape }}
+          <p>
+           {% include 'social-sharing', share_title: product.title, share_permalink: product.url, share_image: product.featured_media %}
+          </p>
+        </div>
+        <!--評価-->
+　　　　　　{% render 'judgeme_widgets', widget_type: 'judgeme_preview_badge', jm_style: 'pointer-events: none;', concierge_install: false, product: product %}
+      
+          
+           
+          
+        <!--価格-->
+        <div class="product_price">
+          <span id="ProductPrice-{{ section_id }}"
+              class="product__price{% if current_variant.compare_at_price > current_variant.price %} on-sale{% endif %}">
+              {{ current_variant.price | money }}
+          </span>
+        </div>
+
+        <!--ギフトラッピング-->
+        <!--<div class="title">
+          <h3><ls-static-304248>ギフトラッピングについて</ls-static-304248></h3>
+          <p><ls-static-451326>GIFT WARRPING</ls-static-451326></p>
+        </div>-->
+        <div id="infiniteoptions-container"></div>
+        <!--ギフトラッピング-->
+        {% render 'giftwrapping' %}
+        <!--バリエーション選択&カートボタン・お気に入り追加ボタン-->
+        <div class="btn_row">
+          {%- render 'product-form',
+            section_id: section_id,
+            product: product,
+            current_variant: current_variant
+          -%}
+        </div>
+       
+        <!--この商品について問い合わせる-->
+        <div class="product_question">
+          {% if product.type == "リング" %}
+          <!--リングサイズ表-->
+          	<a id="ringSizeTable" style="line-height: 2;"><ls-static-213383>{{ 'products.product.ringsize_list' | t }}</ls-static-213383></a>
+          	<br>
+          {% endif %}
+	  <a href="/pages/material" style="line-height: 2;"><ls-static-824672>{{ 'products.product.material' | t }}</ls-static-824672></a><br>
+          <!-- <a href="/pages/gift" style="line-height: 2;">ギフトラッピング</a><br> -->
+          <a href="/pages/contact?id={{ product.handle }}" style="line-height: 2;"><ls-static-744608>{{ 'products.product.contact' | t }}</ls-static-744608></a>
+        </div>
+        
+        <!--リングサイズ表モーダル-->
+        <script>
+          $('#ringSizeTable').on('click', function() {
+            $('html').css('overflow','hidden');
+            $('body').css('overflow','hidden');
+            $('#modal_bg').addClass('modal_display');
+          });
+
+          $(document).on('click', '#modal_close_btn', function(){
+            $('html').css('overflow','auto');
+            $('body').css('overflow','auto');            
+            $('#modal_bg').removeClass('modal_display');
+          });
+
+          $(document).on('click', '#modal_bg.modal_display', function(){
+            $('html').css('overflow','auto');
+            $('body').css('overflow','auto');            
+            $('#modal_bg').removeClass('modal_display');
+          });
+          
+        </script>
+        <style>
+          #modal_bg{
+          	display:none;
+            position: fixed;
+            background: #00000094;
+            width: 100vw;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            z-index: 2;
+          }
+          #modal_bg.modal_display{
+            display:block;
+          }
+          #modal_wrapper{
+            position: relative;
+            top: 0;
+            left: 0;
+            background: #fff;
+            max-width: 1046px;
+            width: calc(100vw - 25px);
+            margin: 0 auto;
+            padding: 40px;
+            overflow-y: scroll;
+            height: calc(100vh - 50px);
+            -ms-overflow-style: none;    /* IE, Edge 対応 */
+            scrollbar-width: none;       /* Firefox 対応 */
+          }
+			#modal_wrapper::-webkit-scrollbar{
+              display:none;
+            }
+          #modal_close_btn{
+            cursor: pointer;
+            position: absolute;
+            right: 25px;
+            top: 25px;
+          }
+          .tg .tg-a3wm {
+              width: 25%;
+          }
+          .tg .tg-0keb {
+              width: 25%;
+          }
+          @media screen and (max-width: 768px) {
+            #modal_wrapper {
+                width: calc(100vw - 40px);
+                padding: 30px;
+            }
+            #modal_close_btn {
+                right: 10px;
+                top: 10px;
+            }
+            .tg th {
+              font-size: 4px !important;
+              vertical-align: middle !important;
+            }
+          }
+        </style>
+        <div id="modal_bg">
+          <div id="modal_wrapper">
+            <div class="title">
+              <h3><ls-static-81910><{{ 'products.product.ringsize_list' | t }}</ls-static-81910></h3>
+              <p><ls-static-371109>RING SIZE</ls-static-371109></p>
+            </div>
+            <p><ls-static-254424>{{ 'products.product.ringsize_list_desc' | t }}</ls-static-254424></p>
+            <br>
+            <style type="text/css">
+              .tg  {border-collapse:collapse;border-spacing:0;}
+              .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+                overflow:hidden;padding:10px 5px;word-break:normal;}
+              .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:10px !important;
+                font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+              .tg .tg-pb0m{border-color:inherit;text-align:center;vertical-align:bottom}
+              .tg .tg-a3wm{background-color:#e4e4e4;border-color:inherit;text-align:center;vertical-align:bottom}
+              .tg .tg-0keb{background-color:#e4e4e4;text-align:center;vertical-align:bottom}
+              .tg .tg-8d8j{text-align:center;vertical-align:bottom}
+            </style>
+            <table class="tg">
+              <thead>
+                <tr>
+                  <th class="tg-a3wm"><ls-static-894777>{{ 'products.product.standard_ja' | t }}(号)</ls-static-894777></th>
+                  <th class="tg-a3wm"><ls-static-874531>{{ 'products.product.ring_diameter' | t }}(mm)</ls-static-874531></th>
+                  <th class="tg-0keb"><ls-static-651555>{{ 'products.product.ring_circum' | t }}(mm)</ls-static-651555></th>
+                  <th class="tg-0keb"><ls-static-274556>{{ 'products.product.standard' | t }}</ls-static-274556></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="tg-pb0m">1号</td>
+                  <td class="tg-pb0m">13.0</td>
+                  <td class="tg-8d8j">40.8</td>
+                  <td class="tg-8d8j">41</td>
+                </tr>
+                <tr>
+                  <td class="tg-pb0m">2号</td>
+                  <td class="tg-pb0m">13.3</td>
+                  <td class="tg-8d8j">41.9</td>
+                  <td class="tg-8d8j">42</td>
+                </tr>
+                <tr>
+                  <td class="tg-pb0m">3号</td>
+                  <td class="tg-pb0m">13.7</td>
+                  <td class="tg-8d8j">42.9</td>
+                  <td class="tg-8d8j">43</td>
+                </tr>
+                <tr>
+                  <td class="tg-pb0m">4号</td>
+                  <td class="tg-pb0m">14.0</td>
+                  <td class="tg-8d8j">44.0</td>
+                  <td class="tg-8d8j">44</td>
+                </tr>
+                <tr>
+                  <td class="tg-8d8j">5号</td>
+                  <td class="tg-8d8j">14.3</td>
+                  <td class="tg-8d8j">45.0</td>
+                  <td class="tg-8d8j">45</td>
+                </tr>
+                <tr>
+                  <td class="tg-8d8j">6号</td>
+                  <td class="tg-8d8j">14.7</td>
+                  <td class="tg-8d8j">46.1</td>
+                  <td class="tg-8d8j">46</td>
+                </tr>
+                <tr>
+                  <td class="tg-8d8j">7号</td>
+                  <td class="tg-8d8j">15.0</td>
+                  <td class="tg-8d8j">47.1</td>
+                  <td class="tg-8d8j">47</td>
+                </tr>
+                <tr>
+                  <td class="tg-8d8j">8号</td>
+                  <td class="tg-8d8j">15.3</td>
+                  <td class="tg-8d8j">48.1</td>
+                  <td class="tg-8d8j">48</td>
+                </tr>
+                <tr>
+                  <td class="tg-8d8j">9号</td>
+                  <td class="tg-8d8j">15.7</td>
+                  <td class="tg-8d8j">49.2</td>
+                  <td class="tg-8d8j">49</td>
+                </tr>
+                <tr>
+                  <td class="tg-8d8j">10号</td>
+                  <td class="tg-8d8j">16.0</td>
+                  <td class="tg-8d8j">50.3</td>
+                  <td class="tg-8d8j">50</td>
+                </tr>
+                <tr>
+                  <td class="tg-8d8j">11号</td>
+                  <td class="tg-8d8j">16.3</td>
+                  <td class="tg-8d8j">51.3</td>
+                  <td class="tg-8d8j">51</td>
+                </tr>
+                <tr>
+                  <td class="tg-8d8j">12号</td>
+                  <td class="tg-8d8j">16.7</td>
+                  <td class="tg-8d8j">52.4</td>
+                  <td class="tg-8d8j">52</td>
+                </tr>
+                <tr>
+                  <td class="tg-8d8j">13号</td>
+                  <td class="tg-8d8j">17.0</td>
+                  <td class="tg-8d8j">53.4</td>
+                  <td class="tg-8d8j">53</td>
+                </tr>
+                <tr>
+                  <td class="tg-8d8j">14号</td>
+                  <td class="tg-8d8j">17.3</td>
+                  <td class="tg-8d8j">54.5</td>
+                  <td class="tg-8d8j">54</td>
+                </tr>
+                <tr>
+                  <td class="tg-8d8j">15号</td>
+                  <td class="tg-8d8j">17.7</td>
+                  <td class="tg-8d8j">55.5</td>
+                  <td class="tg-8d8j">55</td>
+                </tr>
+                <tr>
+                  <td class="tg-8d8j">16号</td>
+                  <td class="tg-8d8j">18.0</td>
+                  <td class="tg-8d8j">56.6</td>
+                  <td class="tg-8d8j">56</td>
+                </tr>
+                <tr>
+                  <td class="tg-8d8j">17号</td>
+                  <td class="tg-8d8j">18.3</td>
+                  <td class="tg-8d8j">57.6</td>
+                  <td class="tg-8d8j">57</td>
+                </tr>
+                <tr>
+                  <td class="tg-8d8j">18号</td>
+                  <td class="tg-8d8j">18.7</td>
+                  <td class="tg-8d8j">58.6</td>
+                  <td class="tg-8d8j">58</td>
+                </tr>
+                <tr>
+                  <td class="tg-8d8j">19号</td>
+                  <td class="tg-8d8j">19.0</td>
+                  <td class="tg-8d8j">59.7</td>
+                  <td class="tg-8d8j">59</td>
+                </tr>
+                <tr>
+                  <td class="tg-8d8j">20号</td>
+                  <td class="tg-8d8j">19.3</td>
+                  <td class="tg-8d8j">60.7</td>
+                  <td class="tg-8d8j">60</td>
+                </tr>
+                <tr>
+                  <td class="tg-8d8j">21号</td>
+                  <td class="tg-8d8j">19.7</td>
+                  <td class="tg-8d8j">61.8</td>
+                  <td class="tg-8d8j">61</td>
+                </tr>
+                <tr>
+                  <td class="tg-8d8j">22号</td>
+                  <td class="tg-8d8j">20.0</td>
+                  <td class="tg-8d8j">62.8</td>
+                  <td class="tg-8d8j">62</td>
+                </tr>
+                <tr>
+                  <td class="tg-8d8j">23号</td>
+                  <td class="tg-8d8j">20.3</td>
+                  <td class="tg-8d8j">63.9</td>
+                  <td class="tg-8d8j">63</td>
+                </tr>
+                <tr>
+                  <td class="tg-8d8j">24号</td>
+                  <td class="tg-8d8j">20.7</td>
+                  <td class="tg-8d8j">64.9</td>
+                  <td class="tg-8d8j">64</td>
+                </tr>
+                <tr>
+                  <td class="tg-8d8j">25号</td>
+                  <td class="tg-8d8j">21.0</td>
+                  <td class="tg-8d8j">66.0</td>
+                  <td class="tg-8d8j">65</td>
+                </tr>
+                <tr>
+                  <td class="tg-8d8j">26号</td>
+                  <td class="tg-8d8j">21.3</td>
+                  <td class="tg-8d8j">67.0</td>
+                  <td class="tg-8d8j">66</td>
+                </tr>
+                <tr>
+                  <td class="tg-8d8j">27号</td>
+                  <td class="tg-8d8j">21.7</td>
+                  <td class="tg-8d8j">68.1</td>
+                  <td class="tg-8d8j">67</td>
+                </tr>
+                <tr>
+                  <td class="tg-8d8j">28号</td>
+                  <td class="tg-8d8j">22.0</td>
+                  <td class="tg-8d8j">69.1</td>
+                  <td class="tg-8d8j">68</td>
+                </tr>
+                <tr>
+                  <td class="tg-8d8j">29号</td>
+                  <td class="tg-8d8j">22.3</td>
+                  <td class="tg-8d8j">70.2</td>
+                  <td class="tg-8d8j">69</td>
+                </tr>
+                <tr>
+                  <td class="tg-8d8j">30号</td>
+                  <td class="tg-8d8j">22.7</td>
+                  <td class="tg-8d8j">71.2</td>
+                  <td class="tg-8d8j">70</td>
+                </tr>
+              </tbody>
+            </table>
+            <br>
+            <p><ls-static-532316>・{{ 'products.product.ringsize_measure_txt' | t }}</ls-static-532316></p>
+          </div>
+          <div id="modal_close_btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="58.97" height="58.58" viewBox="0 0 58.97 58.58" style="">
+              <g id="グループ_374" data-name="グループ 374" transform="translate(1.405 15.207)">
+                <line id="線_85" data-name="線 85" x2="30" y2="30" transform="translate(0 -13.5)" fill="none" stroke="#ccc" stroke-width="2" style=""></line>
+                <line id="線_87" data-name="線 87" y1="30" x2="30" transform="translate(0 -14.5)" fill="none" stroke="#ccc" stroke-width="1" style=""></line>
+              </g>
+            </svg>
+          </div>
+        </div>
+        
+        
+        <!--説明テキスト-->
+        <div class="product_description_text">
+          {{ product.description }}
+        </div>
+
+
+        <!--商品スペック-->
+        {% if product.metafields.custom_fields["size"] or product.metafields.custom_fields["length"] or product.metafields.custom_fields["metal"] or product.metafields.custom_fields["arm"] or product.metafields.custom_fields["topsize"] or product.metafields.custom_fields["motif"] or product.metafields.custom_fields["chain"] or product.metafields.custom_fields["stone"] or product.metafields.custom_fields["weight"] or product.metafields.custom_fields["weight"] %}
+        <div class="title">
+          <h3><ls-static-81910>{{ 'general.site.description' | t }}</ls-static-81910></h3>
+          <p><ls-static-371109>DESCRIPTION</ls-static-371109></p>
+        </div>
+        {% endif %}
+        
+        <div class="product_spec_table">
+
+          {% if product.metafields.custom_fields["stone"] != blank %}
+            <dl>
+              <dt>{{ 'general.product.stone' | t }}</dt>
+              <dd>{{ product.metafields.custom_fields["stone"] }}</dd>
+            </dl>
+          {% endif %}
+
+          {% if product.metafields.custom_fields["metal"] != blank %}
+            <dl>
+              <dt>{{ 'general.product.metal' | t }}</dt>
+              <dd>{{ product.metafields.custom_fields["metal"] }}</dd>
+            </dl>
+          {% endif %}
+
+          {% if product.metafields.custom_fields["topsize"] != blank %}
+            <dl>
+              <dt>{{ 'general.product.topsize' | t }}</dt>
+              <dd>{{ product.metafields.custom_fields["topsize"] }}</dd>
+            </dl>
+          {% endif %}
+
+          {% if product.metafields.custom_fields["topdepth"] != blank %}
+            <dl>
+              <dt><ls-static-954487>{{ 'general.product.topdepth' | t }}</ls-static-954487></dt>
+              <dd>{{ product.metafields.custom_fields["topdepth"] }}</dd>
+            </dl>
+          {% endif %}
+
+          {% if product.metafields.custom_fields["arm"] != blank %}
+            <dl>
+              <dt>{{ 'general.product.arm' | t }}</dt>
+              <dd>{{ product.metafields.custom_fields["arm"] }}</dd>
+            </dl>
+          {% endif %}
+
+          {% if product.metafields.custom_fields["parts_"] != blank %}
+            <dl>
+              <dt><ls-static-441042>{{ 'general.product.parts' | t }}</ls-static-441042></dt>
+              <dd>{{ product.metafields.custom_fields["parts_"] }}</dd>
+            </dl>
+          {% endif %}
+          
+          {% if product.metafields.custom_fields["length"] != blank %}
+            <dl>
+              <dt>{{ 'general.product.length' | t }}</dt>
+              <dd>{{ product.metafields.custom_fields["length"] }}</dd>
+            </dl>
+          {% endif %}
+
+          {% if product.metafields.custom_fields["weight"] != blank %}
+            <dl>
+              <dt>{{ 'general.product.weight' | t }}</dt>
+              <dd>{{ product.metafields.custom_fields["weight"] }}</dd>
+            </dl>
+          {% endif %}
+
+          {% if product.metafields.custom_fields["etc"] != blank %}
+            <dl>
+              <dt><ls-static-546768>{{ 'general.product.other' | t }}</ls-static-546768></dt>
+              <dd>{{ product.metafields.custom_fields["etc"] }}</dd>
+            </dl>
+          {% endif %}
+
+          
+          {%comment%}
+          {% if product.metafields.custom_fields["size"] != blank %}
+            <dl>
+              <dt>{{ 'general.product.size' | t }}</dt>
+              <dd>{{ product.metafields.custom_fields["size"] }}</dd>
+            </dl>
+          {% endif %}
+
+          {% if product.metafields.custom_fields["motif"] != blank %}
+            <dl>
+              <dt>{{ 'general.product.motif' | t }}</dt>
+              <dd>{{ product.metafields.custom_fields["motif"] }}</dd>
+            </dl>
+          {% endif %}
+
+          {% if product.metafields.custom_fields["chain"] != blank %}
+            <dl>
+              <dt>{{ 'general.product.chain' | t }}</dt>
+              <dd>{{ product.metafields.custom_fields["chain"] }}</dd>
+            </dl>
+          {% endif %}
+          {%endcomment%}
+
+        </div>
+        <!--商品説明(スペック)-->
+
+        
+      </div>
+    </div>
+  </div>
+
+                
+  {% comment %}
+  <!-- title -->
+  {% if product.metafields.custom_fields["feature1-2"] != blank %}
+  <div class="content">
+    <div class="title">
+      <h3><ls-static-143281>おすすめポイント</ls-static-143281></h3>
+      <p><ls-static-796241>POINTS</ls-static-796241></p>
+    </div>
+  </div>
+  {% endif %}
+  
+  <!-- point_description -->
+  <div class="content">
+    {% if product.metafields.custom_fields["feature1-2"] != blank %}
+    <p class="point_description">
+		<span>{{ product.metafields.custom_fields["feature1-2"] }}</span>         	
+    </p>
+  	{% endif %}  
+    {% endcomment %}
+
+    <!--SP時・バリエーション選択&カートボタン・お気に入り追加ボタンここにもうひとつ-->
+    <div class="sp">
+    	<div class="product_form_wrapper_clone"></div>
+        <script>
+          $(function () {
+            $(window).on('load',function () {
+              let product_form_wrapper_clone = $(".product_form_wrapper").clone();
+              $(".product_form_wrapper_clone").append(product_form_wrapper_clone);
+            });
+          });
+        </script>
+    </div>
+  </div>
+
+  <!-- title -->
+ 
+
+  <!-- review -->
+  
+
+  <!-- judge.meレビュー -->
+  <div class="content p-page_review">
+  {% render 'judgeme_widgets', widget_type: 'judgeme_review_widget', concierge_install: false, product: product %}
+  </div>
+</div>
+                
+{% schema %}
+{
+  "name": {
+    "ja": "商品詳細ページ"
+  },
+  "class": "product-template",
+  "blocks": [
+    {
+      "type": "custom",
+      "name": {
+        "ja": "画像"
+      },
+      "limit": 3,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image_picker",
+          "label": {
+            "ja": "画像"
+          }
+        }
+      ]
+    }
+  ],
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "is_visivle",
+      "label": {
+        "ja": "表示する？"
+      },
+      "info": {
+        "ja": "チェックを入れると表示、外すと非表示になります。"
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": {
+        "ja": "本文"
+      },
+      "default": {
+        "ja": "default text. default text."
+      }
+    }
+  ],
+  "presets": [
+    {
+      "name": {
+        "ja": "商品詳細ページ"
+      },
+      "category": {
+        "ja": "商品詳細ページ"
+      }
+    }
+  ]
+}
+{% endschema %}

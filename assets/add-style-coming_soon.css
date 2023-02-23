@@ -1,0 +1,99 @@
+<style>
+  .coming_soon{
+    max-width: none;
+  margin:auto;
+  }
+  .coming_soon-top{
+    margin-top: 60px;
+  }
+  .coming_soon-title p{
+    margin-bottom:40px;
+  }
+  .coming_soon-block{
+    margin-bottom:100px;
+  }
+  .coming_soon-block .slick-prev,.coming_soon-block  .slick-next{
+    display:inline-block!important;
+    top:18%;
+  }
+  .coming_soon-block .slick-prev,.coming_soon-block .slick-next{
+    top:-10%;
+  }
+  .coming_soon-block .slick-prev{
+      left:-45px;
+  }
+  .coming_soon-block .slick-next{
+      right:-10px;
+  }
+  .coming_soon-slide-block{
+    padding:0 10px;
+  }
+  .coming_soon-label  {
+      position: absolute;
+      left: 0;
+      top: 5px;
+      z-index: 2;
+      padding: 10px;
+      margin: 0;
+      letter-spacing: 0;
+      max-width: 100%;
+      line-height: 1;
+      padding: 2px 10px 1px;
+    vertical-align: top;
+  }
+  .coming_soon-label .coming_soon-span {
+    display: inline-block;
+    padding: 2px 10px 1px;
+    border: 1px solid transparent;
+    vertical-align: top;
+    background: #fff;
+    color: #ffb6fd;
+    border-color: #d2d8db;
+    line-height: 16px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  @media screen and (max-width:768px){
+  .coming_soon{
+    padding:0;
+  }
+    .coming_soon .coming_soon-top{
+      margin-top: 30px;
+      padding:0 20px;
+    }
+ .coming_soon .coming_soon-title{
+    padding-right:10px;
+  padding-left:10px;
+  }
+    .coming_soon .coming_soon_wrap .slick-next{
+      right:-25px;
+    }
+  .coming_soon .coming_soon_wrap .slick-prev{
+      left:-25px;
+    }
+    .coming_soon .slick-prev:before, .coming_soon .slick-next:before{
+      position:absolute;
+      bottom:-30px;
+        width:50px;
+        height:50px;
+    }
+  .coming_soon .slick-prev:before{
+      left:0;
+  }
+  .coming_soon .slick-next:before{
+      right:0;
+  }
+    .coming_soon-block .slick-next{
+      right:-5px;
+    }
+    .coming_soon-label .coming_soon-span{
+      font-size: 10px;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+  .coming_soon-label .coming_soon-span:last-child{
+      margin-left: 0;
+  }
+</style>

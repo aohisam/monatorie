@@ -1,0 +1,8 @@
+{% if article.metafields.custom_fields["caption2-1"] != blank %}
+  <div class="custom-field custom-field__caption2-1 custom-field__type--text">
+    <h3 class="custom-field--title"><ls-static-91657>画像1キャプション</ls-static-91657></h3>
+    <div class="custom-field--value">
+      {{ article.metafields.custom_fields["caption2-1"] }}
+    </div>
+  </div>
+{% endif %}

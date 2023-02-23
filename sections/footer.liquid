@@ -1,0 +1,88 @@
+<!-- footer -->
+<div class="content">
+  <div class="footer">
+
+    <div class="footer_logo">
+      <a href="{{ shop.url }}">
+        <p class="logo">
+          {{ 'logo.svg' | asset_url | img_tag }}
+        </p>
+      </a>
+      <div class="social_row">
+        <a href="https://www.instagram.com/jewelry_monatelier/?hl=ja">
+          <div>
+            {{ 'insta_icon.svg' | asset_url | img_tag }}
+          </div>
+        </a>
+        <a href="https://www.facebook.com/jewelryMONATELIER/">
+          <div>
+            {{ 'facebook_icon.svg' | asset_url | img_tag }}
+          </div>
+        </a>
+        <a href="https://twitter.com/MONATELIERjewel">
+          <div>
+            {{ 'twitter_icon.svg' | asset_url | img_tag }}
+          </div>
+        </a>
+      </div>
+      <div class="btn_page_top tt_drugs_r">
+        <a href="#"><ls-static-127259>PAGE TOP</ls-static-127259></a>
+      </div>
+    </div>
+
+      <div class="footer_nav cssreset">
+        {% for link in linklists[section.settings.footer_menu01].links %}
+        <div>
+          <div class="footer_nav_title">
+            {% unless link.url == "#" %}<a href="{{ link.url }}">{% endunless %}
+              <p>{{ link.title }}</p>
+            {% unless link.url == "#" %}</a>{% endunless %}
+          </div>
+          <div>
+            <ul class="footer_nav_list">
+              {% for sub_link in link.links %}
+              <a href="{{ sub_link.url }}">
+                <li>{{ sub_link.title }}</li>
+              </a>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+
+    <div class="footer_bottom">
+      <div class="pc"><p class="allright"><ls-static-25804>© 2021 J-one All Rights Reserved.</ls-static-25804></p></div>
+      <div>
+        <ul class="footer_bottom_nav">
+          {% for link in linklists[section.settings.footer_menu02].links %}
+          <a href="{{ link.url }}">
+            <li>{{ link.title }}</li>
+          </a>
+          {% endfor %}
+       </ul>
+      </div>
+      <div class="sp"><p class="allright"><ls-static-510777>© 2021 J-one All Rights Reserved.</ls-static-510777></p></div>
+    </div>
+  </div>
+</div>
+
+</script>
+{% schema %}
+{
+  "name": "フッターメニュー",
+  "settings": [
+      {
+          "type": "link_list",
+          "id": "footer_menu01",
+          "label": "フッター大メニュー"
+      },
+      {
+        "type": "link_list",
+        "id": "footer_menu02",
+        "label": "最下部メニュー"      
+    }
+  ]
+}
+{% endschema %}

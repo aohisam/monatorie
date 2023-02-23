@@ -1,0 +1,39 @@
+<!--newitem-->
+<div class="content">
+  <div class="newitem">
+    <!--newitem cs_set-->
+    {% for product in collections[section.settings.home_featured_products].products limit: section.settings.productAmount %}
+      {% unless product.tags contains 'coming soon' %}
+        {% comment %} {% include 'product_card' %} {% endcomment %}
+        {% include 'product_card' %}
+      {% endunless %}
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "コレクション",
+    "settings": [
+      {
+        "type": "collection",
+        "id": "home_featured_products",
+        "label": "Collection"
+      },
+      {
+        "type": "range",
+        "id": "productAmount",
+        "label": "表示する商品数",
+        "default": 4,
+        "min": 1,
+        "max": 30,
+        "step": 1
+      }
+    ],
+    "presets": [{
+      "name": "コレクション",
+      "category": "Collection"
+    }],
+    "blocks" : []
+  }
+{% endschema %}
